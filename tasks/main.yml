@@ -238,6 +238,7 @@
     shell: |
         openstack role list --project service --user swift --os-url=http://{{ ansible_eth0.ipv4.address  }}:35357/v2.0/ --os-token={{ swift_aio_ks_admin_token  }} | grep admin
     register: should_run_swift_auth
+    ignore_errors: True
 
   - name: Create Swift auth
     shell: |
