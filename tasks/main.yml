@@ -234,6 +234,11 @@
       --bootstrap-public-url http://{{ ansible_host }}:5000/v2.0/ \
       --bootstrap-region-id regionOne
 
+  - name: Check need for swift auth
+    shell: |
+        openstack role list --project service --user swift --os-url=http://{{ ansible_eth0.ipv4.address  }}:35357/v2.0/ --os-token={{ swift_aio_ks_admin_token  }} | grep admin
+    register: should_run_swift_auth
+
   - name: Create Swift auth
     shell: |
       openstack role create swiftoperator --os-url=http://{{ ansible_eth0.ipv4.address }}:35357/v2.0/ --os-token={{ swift_aio_ks_admin_token }}
@@ -246,6 +251,7 @@
       --publicurl http://{{ ansible_host }}:8080/v1/AUTH_%\(tenant_id\)s \
       --internalurl http://{{ ansible_eth0.ipv4.address }}:8080/v1/AUTH_%\(tenant_id\)s \
       --os-url=http://{{ ansible_eth0.ipv4.address }}:35357/v2.0/ --os-token={{ swift_aio_ks_admin_token }}
+    when: should_run_swift_auth != 0
 
   - name: Create xfs filesystem
     filesystem:
