@@ -105,10 +105,6 @@
     - 'conf.d/ssl'
     - 'conf.d/userdir'
     - 'conf.d/welcome'
-    - 'conf.modules.d/00-dav'
-    - 'conf.modules.d/00-lua'
-    - 'conf.modules.d/00-proxy'
-    - 'conf.modules.d/01-cgi'
 
 - name: Remove mpm prefork module
   lineinfile:
