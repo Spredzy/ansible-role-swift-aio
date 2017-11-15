@@ -17,44 +17,26 @@
 # under the License.
 
 ---
-- name: Ensure semanage is installed
-  package:
-    name: policycoreutils-python
-    state: present
-
-- name: Ensure SELinux is enforced
-  selinux:
-    state: enforcing
-    policy: targeted
-
-- name: Update to latest kernel
-  package:
-    name: kernel
-    state: latest
-  register: kernel
-
-- block:
-  - name: Reboot to new kernel
-    shell: 'sleep 2 && shutdown -r now'
-    async: 1
-    poll: 0
-    ignore_errors: true
-
-  - name: Wait for ssh
-    become: false
-    wait_for:
-      host: '{{ ansible_host }}'
-      port: 22
-      delay: 30
-    delegate_to: localhost
-  when: kernel.changed
-
-- name: Set hostname
-  hostname:
-    name: '{{ ansible_hostname }}.localdomain'
-
 - name: Create a file block device
   command: 'dd if=/dev/zero of=/dev/{{ swift_aio_volume_device }} bs=1M count=1024'
+
+# epel-release and openstack-pike conflicts between each
+# other on some package hence we remove it
+- name: Remove epel-release
+  package:
+    name: epel-release
+    state: absent
+
+# py-bcrypt (epel) conflicts with python2-bcrypt (openstack-pike)
+- name: Remove py-bcrypt
+  command: rpm -e --nodeps py-bcrypt
+  ignore_errors: true
+
+# See why necessary. 5000 + selinux == KO
+- name: Ensure SELinux is enforced
+  selinux:
+    state: permissive
+    policy: targeted
 
 - name: Fix /etc/hosts
   lineinfile:
@@ -80,11 +62,6 @@
     - chrony
     - postfix
 
-- name: Ensure packages are updated
-  package:
-    name: '*'
-    state: latest
-
 - name: Install ntp
   package:
     name: ntp
@@ -95,11 +72,6 @@
     name: ntpd
     state: started
     enabled: true
-
-- name: Install RDO repository
-  package:
-    name: centos-release-openstack-ocata
-    state: present
 
 - name: Install Openstack packages
   package:
@@ -148,12 +120,6 @@
   lineinfile:
     dest: /etc/httpd/conf.modules.d/00-mpm.conf
     line: 'LoadModule mpm_worker_module modules/mod_mpm_worker.so'
-
-- name: Remove listen 80
-  lineinfile:
-    dest: /etc/httpd/conf/httpd.conf
-    regexp: '^Listen 80$'
-    state: absent
 
 - name: Add custom conf to httpd
   lineinfile:
@@ -390,3 +356,12 @@
     dest: '/home/{{ ansible_user }}/openrc'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
+  when: ansible_user != 'root'
+
+- name: Create the openrc
+  template:
+    src: openrc
+    dest: '/{{ ansible_user }}/openrc'
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+  when: ansible_user == 'root'
