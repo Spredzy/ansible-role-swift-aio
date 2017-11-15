@@ -252,7 +252,7 @@
       --publicurl http://{{ ansible_host }}:8080/v1/AUTH_%\(tenant_id\)s \
       --internalurl http://{{ ansible_eth0.ipv4.address }}:8080/v1/AUTH_%\(tenant_id\)s \
       --os-url=http://{{ ansible_eth0.ipv4.address }}:35357/v2.0/ --os-token={{ swift_aio_ks_admin_token }}
-    when: should_run_swift_auth != 0
+    when: should_run_swift_auth.rc != 0
 
   - name: Create xfs filesystem
     filesystem:
