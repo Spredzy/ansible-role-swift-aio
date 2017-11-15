@@ -54,7 +54,7 @@
     name: '{{ ansible_hostname }}.localdomain'
 
 - name: Create a file block device
-  command: 'dd if=/dev/zero of=/dev/{{ swift_aio_volume_device }} bs=1M count=4096'
+  command: 'dd if=/dev/zero of=/dev/{{ swift_aio_volume_device }} bs=1M count=1024'
 
 - name: Fix /etc/hosts
   lineinfile:
@@ -251,7 +251,7 @@
 
   - name: Ensure keysone has a login
     user:
-      name: keysone
+      name: keystone
       shell: /bin/bash
 
   - name: Run Keystone dbsync
