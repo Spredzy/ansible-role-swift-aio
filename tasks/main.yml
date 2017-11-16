@@ -126,7 +126,6 @@
     - 'ServerTokens Prod'
     - 'ServerSignature Off'
     - 'TraceEnable Off'
-    - 'WSGIRestrictEmbedded On'
   notify:
     - reload httpd
 
