@@ -126,6 +126,12 @@
     - 'ServerTokens Prod'
     - 'ServerSignature Off'
     - 'TraceEnable Off'
+    - 'ServerLimit 16'
+    - 'StartServers 2'
+    - 'MaxRequestWorkers 150'
+    - 'MinSpareThreads 25'
+    - 'MaxSpareThreads 75'
+    - 'ThreadsPerChild 25'
   notify:
     - reload httpd
 
