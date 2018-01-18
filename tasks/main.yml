@@ -18,7 +18,7 @@
 
 ---
 - name: Create a file block device
-  command: 'dd if=/dev/zero of=/dev/{{ swift_aio_volume_device }} bs=1M count=1024'
+  command: 'dd if=/dev/zero of=/tmp/{{ swift_aio_volume_device }} bs=1M count=1024'
 
 # epel-release and openstack-pike conflicts between each
 # other on some package hence we remove it
