@@ -262,7 +262,7 @@
   - name: Create xfs filesystem
     filesystem:
       fstype: xfs
-      dev: '/dev/{{ swift_aio_volume_device }}'
+      dev: '/tmp/{{ swift_aio_volume_device }}'
       force: true
 
   - name: Create Swift storage directory
@@ -273,7 +273,7 @@
   - name: Mount the swift volume
     mount:
       name: '/srv/node/{{ swift_aio_volume_device }}'
-      src: '/dev/{{ swift_aio_volume_device }}'
+      src: '/tmp/{{ swift_aio_volume_device }}'
       fstype: xfs
       opts: noatime,nodiratime,nobarrier,logbufs=8
       state: mounted
