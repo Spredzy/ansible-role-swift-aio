@@ -361,7 +361,7 @@
 - name: Create the openrc
   template:
     src: openrc
-    dest: '/home/{{ ansible_user }}/openrc'
+    dest: '{{ ansible_env.HOME }}/openrc'
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
   when: ansible_user != 'root'
