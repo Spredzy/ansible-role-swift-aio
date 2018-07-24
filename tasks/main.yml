@@ -48,8 +48,6 @@
     name: postfix
     state: stopped
     enabled: no
-  register: unused
-  failed_when: "unused|failed and 'not find' not in unused.msg"
 
 - name: Remove unused services
   package:
