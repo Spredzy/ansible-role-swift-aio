@@ -45,33 +45,16 @@
 
 - name: Stop unused services
   service:
-    name: '{{ item }}'
+    name: postfix
     state: stopped
     enabled: no
-  with_items:
-    - chronyd
-    - postfix
   register: unused
   failed_when: "unused|failed and 'not find' not in unused.msg"
 
 - name: Remove unused services
   package:
-    name: '{{ item }}'
+    name: postfix
     state: absent
-  with_items:
-    - chrony
-    - postfix
-
-- name: Install ntp
-  package:
-    name: ntp
-    state: present
-
-- name: Start ntp daemon
-  service:
-    name: ntpd
-    state: started
-    enabled: true
 
 - name: Install Openstack packages
   package:
