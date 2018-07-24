@@ -43,17 +43,6 @@
     dest: /etc/hosts
     line: '{{ ansible_eth0.ipv4.address }} {{ ansible_hostname }}.{{ ansible_domain }} {{ ansible_hostname }}'
 
-- name: Stop unused services
-  service:
-    name: postfix
-    state: stopped
-    enabled: no
-
-- name: Remove unused services
-  package:
-    name: postfix
-    state: absent
-
 - name: Install Openstack packages
   package:
     name: '{{ item }}'
